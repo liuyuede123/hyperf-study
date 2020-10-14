@@ -11,7 +11,10 @@ declare(strict_types=1);
  */
 namespace App\Exception\Handler;
 
+use App\Util\Response;
 use Hyperf\Contract\StdoutLoggerInterface;
+use Hyperf\Database\Model\ModelNotFoundException;
+use Hyperf\HttpMessage\Exception\HttpException;
 use Hyperf\ExceptionHandler\ExceptionHandler;
 use Hyperf\HttpMessage\Stream\SwooleStream;
 use Psr\Http\Message\ResponseInterface;
@@ -33,7 +36,20 @@ class AppExceptionHandler extends ExceptionHandler
     {
         $this->logger->error(sprintf('%s[%s] in %s', $throwable->getMessage(), $throwable->getLine(), $throwable->getFile()));
         $this->logger->error($throwable->getTraceAsString());
-        return $response->withHeader('Server', 'Hyperf')->withStatus(500)->withBody(new SwooleStream('Internal Server Error.'));
+
+        // 阻止异常冒泡
+        $this->stopPropagation();
+        $code = $throwable->getCode();
+        $msg = $throwable->getMessage();
+        if ($throwable instanceof HttpException) {
+            $code = $throwable->getStatusCode();
+        }
+        if ($throwable instanceof ModelNotFoundException) {
+            $code = 404;
+            $msg = '数据不存在';
+        }
+        $data = Response::json($code, $msg);
+        return $response->withStatus($code)->withBody(new SwooleStream($data));
     }
 
     public function isValid(Throwable $throwable): bool
