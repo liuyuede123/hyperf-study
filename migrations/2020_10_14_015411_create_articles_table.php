@@ -14,7 +14,7 @@ class CreateArticlesTable extends Migration
         Schema::create('articles', function (Blueprint $table) {
             $table->bigIncrements('id')->comment('主键');
             $table->string('title', 64)->comment('标题');
-            $table->text('content')->comment('内容');
+            $table->unsignedBigInteger('category_id')->comment('分类id');
             $table->softDeletes();
             $table->timestamps();
         });

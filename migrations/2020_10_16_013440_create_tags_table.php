@@ -4,17 +4,16 @@ use Hyperf\Database\Schema\Schema;
 use Hyperf\Database\Schema\Blueprint;
 use Hyperf\Database\Migrations\Migration;
 
-class CreateArticlesContentTable extends Migration
+class CreateTagsTable extends Migration
 {
     /**
      * Run the migrations.
      */
     public function up(): void
     {
-        Schema::create('articles_content', function (Blueprint $table) {
+        Schema::create('tags', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('article_id')->comment('文章表id');
-            $table->text('content')->comment('文章内容');
+            $table->string('name', 64)->comment('标签名');
             $table->softDeletes();
             $table->timestamps();
         });
@@ -25,6 +24,6 @@ class CreateArticlesContentTable extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('articles_content');
+        Schema::dropIfExists('tags');
     }
 }
