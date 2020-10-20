@@ -11,16 +11,24 @@ declare(strict_types=1);
  */
 namespace App\Controller;
 
+use App\Util\Response;
+use Hyperf\HttpServer\Annotation\AutoController;
+use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\RequestMapping;
+
+/**
+ * Class IndexController
+ * @package App\Controller
+ * @Controller()
+ */
 class IndexController extends AbstractController
 {
-    public function index()
+    /**
+     * @RequestMapping(path="/sayhi", methods="get,post")
+     * @return array
+     */
+    public function say()
     {
-        $user = $this->request->input('user', 'Hyperf');
-        $method = $this->request->getMethod();
-
-        return [
-            'method' => $method,
-            'message' => "Hello {$user}.",
-        ];
+        return Response::array(200, 'success', ['say' => 'hello hyperf']);
     }
 }

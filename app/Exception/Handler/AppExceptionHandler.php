@@ -17,6 +17,7 @@ use Hyperf\Database\Model\ModelNotFoundException;
 use Hyperf\HttpMessage\Exception\HttpException;
 use Hyperf\ExceptionHandler\ExceptionHandler;
 use Hyperf\HttpMessage\Stream\SwooleStream;
+use Hyperf\Validation\ValidationException;
 use Psr\Http\Message\ResponseInterface;
 use Throwable;
 
@@ -47,6 +48,9 @@ class AppExceptionHandler extends ExceptionHandler
         if ($throwable instanceof ModelNotFoundException) {
             $code = 404;
             $msg = '数据不存在';
+        }
+        if ($throwable instanceof ValidationException) {
+            $msg = $throwable->validator->errors()->first();
         }
         $data = Response::json($code, $msg);
         return $response->withStatus($code)->withBody(new SwooleStream($data));

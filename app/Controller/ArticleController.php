@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Request\ArticleRequest;
 use App\Service\ArticleService;
 use App\Service\CategoryService;
 use App\Util\Response;
@@ -33,7 +34,7 @@ class ArticleController
         return $response->json(Response::array(200, 'success', $article));
     }
 
-    public function add(RequestInterface $request, ResponseInterface $response)
+    public function add(ArticleRequest $request, ResponseInterface $response)
     {
         $title = $request->post('title');
         $content = $request->post('content');
